@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1605 Ferry Street Application</title>
+<meta name="description" content="Rental pre-screening application for 1605 Ferry Street, Metropolis, IL 62985.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --fg:#1d2426; --muted:#5b6669; --line:#d9dedd;
+  --accent:#1f5a6b; --accent-fg:#ffffff; --accent-soft:#e3eef0; --error:#a3332a;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Public Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#121718; --surface:#1a2123; --fg:#e6ebea; --muted:#9aa6a8; --line:#2e3739;
+  --accent:#6fb3c4; --accent-fg:#0d1517; --accent-soft:#1d3238; --error:#f08a7e; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding:28px 16px 48px;display:grid;gap:20px}
+header{display:grid;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(28px,6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{background:var(--accent-soft);border-radius:999px;padding:4px 12px;font-size:14px}
+form{display:grid;gap:16px}
+fieldset{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:18px;margin:0;display:grid;gap:14px;min-width:0}
+legend{font-family:var(--display);font-weight:600;font-size:18px;padding:0 6px}
+.field{display:grid;gap:5px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+label,.q{font-weight:500}
+.hint{font-size:13px;color:var(--muted)}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],textarea{
+  font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px;width:100%}
+textarea{min-height:76px;resize:vertical}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.radios{display:flex;flex-wrap:wrap;gap:8px 18px}
+.radios label,.check{font-weight:400;display:flex;gap:8px;align-items:flex-start}
+.check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--accent)}
+.radios input{accent-color:var(--accent)}
+.consent{border-color:var(--accent)}
+.err{color:var(--error);font-size:14px;margin:0}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:12px 22px;cursor:pointer;background:var(--accent);color:var(--accent-fg)}
+button[disabled]{opacity:.6;cursor:wait}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.done{background:var(--surface);border:2px solid var(--accent);border-radius:10px;padding:22px;display:grid;gap:8px}
+.done h2{font-family:var(--display);margin:0;font-size:24px}
+.done p{margin:0}
+footer{font-size:13px;color:var(--muted);text-align:center}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Rental pre-screening</span>
+    <h1>1605 Ferry Street</h1>
+    <p class="sub">Metropolis, IL 62985 · Single-family home, about 970 sq ft</p>
+    <div class="facts">
+      <span class="chip">Income: 3× monthly rent</span>
+      <span class="chip">Tenant pays electric, gas, internet</span>
+      <span class="chip">$40 application fee</span>
+    </div>
+    <p class="sub" style="margin-top:8px">Please answer these questions so we can schedule a showing. Everyone is asked the same questions. It takes about 3 minutes.</p>
+  </header>
+
+  <form id="app" novalidate>
+    <div class="trap" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+
+    <fieldset>
+      <legend>Contact</legend>
+      <div class="field"><label for="name">Full legal name *</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+      <div class="row">
+        <div class="field"><label for="phone">Phone *</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+        <div class="field"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Household</legend>
+      <div class="row">
+        <div class="field"><label for="movein">Desired move-in date *</label><input id="movein" name="movein" type="date" required></div>
+        <div class="field"><label for="people">People who would live here *</label><input id="people" name="people" type="number" min="1" max="12" inputmode="numeric" required></div>
+      </div>
+      <div class="field">
+        <span class="q" id="petsLbl">Any pets? *</span>
+        <div class="radios" role="radiogroup" aria-labelledby="petsLbl">
+          <label><input type="radio" name="pets" value="No"> No</label>
+          <label><input type="radio" name="pets" value="Yes"> Yes</label>
+        </div>
+      </div>
+      <div class="field" id="petWrap" hidden><label for="petDesc">Type, breed, and how many</label><input id="petDesc" name="petDesc" type="text"></div>
+      <p class="hint" style="margin:0">Assistance animals for a person with a disability are not pets.</p>
+      <div class="field">
+        <span class="q" id="smokeLbl">Does anyone in the household smoke? *</span>
+        <div class="radios" role="radiogroup" aria-labelledby="smokeLbl">
+          <label><input type="radio" name="smoke" value="No"> No</label>
+          <label><input type="radio" name="smoke" value="Yes"> Yes</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Income and rental history</legend>
+      <div class="field">
+        <label for="income">Total monthly household income ($) *</label>
+        <input id="income" name="income" type="number" min="0" step="50" inputmode="numeric" required>
+        <span class="hint">Include all lawful sources: wages, benefits, child support, housing vouchers.</span>
+      </div>
+      <div class="row">
+        <div class="field"><label for="llName">Current landlord name</label><input id="llName" name="llName" type="text"></div>
+        <div class="field"><label for="llPhone">Landlord phone</label><input id="llPhone" name="llPhone" type="tel"></div>
+      </div>
+      <div class="field">
+        <span class="q" id="llLbl">May we contact your current landlord? *</span>
+        <div class="radios" role="radiogroup" aria-labelledby="llLbl">
+          <label><input type="radio" name="llok" value="Yes"> Yes</label>
+          <label><input type="radio" name="llok" value="No"> No</label>
+          <label><input type="radio" name="llok" value="Doesn't currently rent"> I don't currently rent</label>
+        </div>
+      </div>
+      <div class="field"><label for="reason">Why are you moving?</label><textarea id="reason" name="reason"></textarea></div>
+      <div class="field"><label for="times">Best days and times for a showing</label><input id="times" name="times" type="text" placeholder="e.g. weekday evenings, Saturday morning"></div>
+    </fieldset>
+
+    <fieldset class="consent">
+      <legend>Fee and screening agreement</legend>
+      <label class="check"><input type="checkbox" id="feeOk" name="feeOk" value="Yes"> <span>I agree to pay a <strong>one-time, $40 application fee</strong>. It is due before screening begins and is non-refundable once screening has been run.</span></label>
+      <label class="check"><input type="checkbox" id="screenOk" name="screenOk" value="Yes"> <span>I authorize the landlord, or a tenant screening service the landlord chooses, to run a <strong>credit and background check</strong> on me. I understand I may be asked to sign the screening service's own authorization form.</span></label>
+      <label class="check"><input type="checkbox" id="trueOk" name="trueOk" value="Yes"> <span>The information I've given is true and complete.</span></label>
+    </fieldset>
+
+    <p class="err" id="errs" role="alert" hidden></p>
+    <div><button type="submit" id="submitBtn">Submit application</button></div>
+  </form>
+
+  <section class="done" id="done" hidden tabindex="-1">
+    <h2>Application received</h2>
+    <p>Thank you. We'll review your answers and contact you about a showing.</p>
+  </section>
+
+  <footer>Equal Housing Opportunity. We do not discriminate on any basis protected by federal, Illinois, or local law.</footer>
+</div>
+
+<script>
+// Paste your Google Apps Script web app URL between the quotes (ends in /exec).
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl2ziAIbTJgMzyGUE7MriO9Z2YvXWXNBGv8aMnmxfsBXtgVnJaqlWZhjfdrE4uyT9s/exec";
+
+(function(){
+  var form = document.getElementById('app');
+  var $ = function(id){ return document.getElementById(id); };
+  var radio = function(n){ var r = form.querySelector('input[name="'+n+'"]:checked'); return r ? r.value : ""; };
+
+  form.querySelectorAll('input[name="pets"]').forEach(function(r){
+    r.addEventListener('change', function(){ $('petWrap').hidden = radio('pets') !== 'Yes'; });
+  });
+
+  function showError(msg){ var e = $('errs'); e.textContent = msg; e.hidden = false; e.scrollIntoView({block:'center'}); }
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var missing = [];
+    [['name','name'],['phone','phone'],['email','email'],['movein','move-in date'],['people','number of people'],['income','monthly income']]
+      .forEach(function(f){ if(!$(f[0]).value.trim()) missing.push(f[1]); });
+    if ($('email').value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('email').value.trim())) missing.push('a valid email');
+    if (!radio('pets')) missing.push('pets');
+    if (!radio('smoke')) missing.push('smoking');
+    if (!radio('llok')) missing.push('landlord contact');
+    if (!$('feeOk').checked || !$('screenOk').checked || !$('trueOk').checked) missing.push('all three agreement boxes');
+    if (missing.length) { showError('Please complete: ' + missing.join(', ') + '.'); return; }
+    $('errs').hidden = true;
+
+    if (SCRIPT_URL.indexOf('https://script.google.com/') !== 0) {
+      showError('This form is not connected yet. Please contact the landlord directly.');
+      return;
+    }
+
+    var btn = $('submitBtn');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    var data = new URLSearchParams(new FormData(form));
+    if (!$('feeOk').checked) data.set('feeOk','No');
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
+      .then(function(){
+        form.hidden = true; $('done').hidden = false; $('done').focus();
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = 'Submit application';
+        showError("Your application didn't go through. Check your internet connection and try again.");
+      });
+  });
+})();
+</script>
+</body>
+</html>
