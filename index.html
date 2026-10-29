@@ -147,7 +147,8 @@ footer{font-size:13px;color:var(--muted);text-align:center}
 
 <script>
 // Paste your Google Apps Script web app URL between the quotes (ends in /exec).
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl2ziAIbTJgMzyGUE7MriO9Z2YvXWXNBGv8aMnmxfsBXtgVnJaqlWZhjfdrE4uyT9s/exec";
+var EMAIL_URL = "https://formsubmit.co/ajax/mitchellgene19@gmail.com";
+var SCRIPT_URL ="https://script.google.com/macros/s/AKfycbxl2ziAIbTJgMzyGUE7MriO9Z2YvXWXNBGv8aMnmxfsBXtgVnJaqlWZhjfdrE4uyT9s/exec";
 
 (function(){
   var form = document.getElementById('app');
@@ -173,22 +174,43 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl2ziAIbTJgMzyGUE7Mri
     if (missing.length) { showError('Please complete: ' + missing.join(', ') + '.'); return; }
     $('errs').hidden = true;
 
-    if (SCRIPT_URL.indexOf('https://script.google.com/') !== 0) {
-      showError('This form is not connected yet. Please contact the landlord directly.');
-      return;
-    }
-
     var btn = $('submitBtn');
     btn.disabled = true; btn.textContent = 'Sending…';
-    var data = new URLSearchParams(new FormData(form));
-    if (!$('feeOk').checked) data.set('feeOk','No');
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
-      .then(function(){
-        form.hidden = true; $('done').hidden = false; $('done').focus();
-      })
+    var finish = function(){ form.hidden = true; $('done').hidden = false; $('done').focus(); };
+
+    // Bots fill the hidden field; pretend success and send nothing.
+    if ($('website').value) { finish(); return; }
+
+    var fd = new FormData(form);
+
+    // Backup copy to the Google Sheet (no response is readable, so it never blocks).
+    try { fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(fd) }).catch(function(){}); } catch (x) {}
+
+    // Main delivery: email via FormSubmit.
+    var labels = {
+      name:'Full name', phone:'Phone', email:'Email', movein:'Desired move-in', people:'People in home',
+      pets:'Pets', petDesc:'Pet details', smoke:'Smokers', income:'Monthly income ($)',
+      llName:'Current landlord', llPhone:'Landlord phone', llok:'OK to contact landlord',
+      reason:'Reason for moving', times:'Showing availability',
+      feeOk:'Agreed to $40 fee', screenOk:'Authorized credit/background check', trueOk:'Certified true'
+    };
+    var payload = {
+      _subject: 'New application – 1605 Ferry Street – ' + $('name').value.trim(),
+      _template: 'table',
+      _replyto: $('email').value.trim()
+    };
+    Object.keys(labels).forEach(function(k){ payload[labels[k]] = fd.get(k) || ''; });
+
+    fetch(EMAIL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function(r){ return r.json().then(function(j){ if (!r.ok || String(j.success) === 'false') throw new Error(j.message || 'failed'); }); })
+      .then(finish)
       .catch(function(){
         btn.disabled = false; btn.textContent = 'Submit application';
-        showError("Your application didn't go through. Check your internet connection and try again.");
+        showError("Your application didn't go through. Please try again in a minute, or contact the landlord directly.");
       });
   });
 })();
